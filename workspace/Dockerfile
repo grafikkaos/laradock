@@ -21,6 +21,7 @@ LABEL maintainer="Mahmoud Zalt <mahmoud@zalt.me>"
 # Start as root
 USER root
 
+
 ###########################################################################
 # Laradock non-root user:
 ###########################################################################
@@ -60,6 +61,14 @@ RUN apt-get update -yqq && \
 #   - INSTALL_NODE=false
 #   - ...
 #
+
+###########################################################################
+# Update All Packages:
+###########################################################################
+USER root
+
+RUN apt-get update -y && apt-get upgrade -y
+
 
 ###########################################################################
 # Set Timezone
@@ -375,7 +384,8 @@ RUN if [ ${INSTALL_NODE} = true ]; then \
         if [ ${NPM_REGISTRY} ]; then \
         npm config set registry ${NPM_REGISTRY} \
         ;fi && \
-        npm install -g gulp bower vue-cli \
+        npm install -g gulp bower vue-cli webpack@^3.12.0 npm-check-updates && \
+        npm install -g jshint vue-svgicon parcel-bundler cross-env nativescript browser-sync \
 ;fi
 
 # Wouldn't execute when added to the RUN statement in the above block
@@ -440,7 +450,6 @@ USER root
 
 ARG INSTALL_AEROSPIKE=false
 ARG PHP_VERSION=${PHP_VERSION}
-ARG AEROSPIKE_PHP_REPOSITORY
 
 RUN if [ ${INSTALL_AEROSPIKE} = true ]; then \
     # Fix dependencies for PHPUnit within aerospike extension
@@ -577,40 +586,34 @@ ARG INSTALL_MSSQL=false
 ARG PHP_VERSION=${PHP_VERSION}
 
 RUN set -eux; if [ ${INSTALL_MSSQL} = true ]; then \
-    if [ $(php -r "echo PHP_MAJOR_VERSION;") = "5" ]; then \
-      apt-get -y install php5.6-sybase freetds-bin freetds-common libsybdb5 \
-      && php -m | grep -q 'mssql' \
-      && php -m | grep -q 'pdo_dblib' \
-    ;else \
-      ###########################################################################
-      #  The following steps were taken from
-      #  https://github.com/Microsoft/msphpsql/wiki/Install-and-configuration
-      ###########################################################################
-      curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - && \
-      curl https://packages.microsoft.com/config/ubuntu/16.04/prod.list > /etc/apt/sources.list.d/mssql-release.list && \
-      apt-get update -yqq && \
-      ACCEPT_EULA=Y apt-get install -yqq msodbcsql=13.0.1.0-1 mssql-tools=14.0.2.0-1 && \
-      apt-get install -yqq unixodbc-dev-utf16 && \
-      ln -sfn /opt/mssql-tools/bin/sqlcmd-13.0.1.0 /usr/bin/sqlcmd && \
-      ln -sfn /opt/mssql-tools/bin/bcp-13.0.1.0 /usr/bin/bcp && \
-      ACCEPT_EULA=Y apt-get install -yqq \
-          unixodbc \
-          unixodbc-dev \
-          libgss3 \
-          odbcinst \
-          msodbcsql \
-          locales && \
-      echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
-      locale-gen && \
-      pecl install sqlsrv-4.3.0 pdo_sqlsrv-4.3.0 && \
-      apt-get install -y locales && \
-      echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
-      locale-gen && \
-      echo "extension=sqlsrv.so"     > /etc/php/${PHP_VERSION}/cli/conf.d/20-sqlsrv.ini && \
-      echo "extension=pdo_sqlsrv.so" > /etc/php/${PHP_VERSION}/cli/conf.d/20-pdo_sqlsrv.ini \
-      && php -m | grep -q 'sqlsrv' \
-      && php -m | grep -q 'pdo_sqlsrv' \
-    ;fi \
+    ###########################################################################
+    #  The following steps were taken from
+    #  https://github.com/Microsoft/msphpsql/wiki/Install-and-configuration
+    ###########################################################################
+    curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - && \
+    curl https://packages.microsoft.com/config/ubuntu/16.04/prod.list > /etc/apt/sources.list.d/mssql-release.list && \
+    apt-get update -yqq && \
+    ACCEPT_EULA=Y apt-get install -yqq msodbcsql=13.0.1.0-1 mssql-tools=14.0.2.0-1 && \
+    apt-get install -yqq unixodbc-dev-utf16 && \
+    ln -sfn /opt/mssql-tools/bin/sqlcmd-13.0.1.0 /usr/bin/sqlcmd && \
+    ln -sfn /opt/mssql-tools/bin/bcp-13.0.1.0 /usr/bin/bcp && \
+    ACCEPT_EULA=Y apt-get install -yqq \
+        unixodbc \
+        unixodbc-dev \
+        libgss3 \
+        odbcinst \
+        msodbcsql \
+        locales && \
+    echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
+    locale-gen && \
+    pecl install sqlsrv-4.3.0 pdo_sqlsrv-4.3.0 && \
+    apt-get install -y locales && \
+    echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
+    locale-gen && \
+    echo "extension=sqlsrv.so"     > /etc/php/${PHP_VERSION}/cli/conf.d/20-sqlsrv.ini && \
+    echo "extension=pdo_sqlsrv.so" > /etc/php/${PHP_VERSION}/cli/conf.d/20-pdo_sqlsrv.ini \
+    && php -m | grep -q 'sqlsrv' \
+    && php -m | grep -q 'pdo_sqlsrv' \
 ;fi
 
 ###########################################################################
@@ -742,6 +745,45 @@ RUN if [ ${INSTALL_DUSK_DEPS} = true ]; then \
   && mv chromedriver /usr/local/bin/ \
   && rm chromedriver_linux64.zip \
 ;fi
+
+###########################################################################
+# EXTRA STUFF
+###########################################################################
+
+USER root
+
+ARG PHP_VERSION=${PHP_VERSION}
+
+RUN apt-get -y install php${PHP_VERSION}-pdo-dblib
+
+###########################################################################
+# JAVA INSTALLATION
+###########################################################################
+
+# USER root
+
+# RUN apt-get update \
+#   && apt-get -y install software-properties-common \
+#   && add-apt-repository ppa:webupd8team/java \
+#   && apt-get update \
+#   && echo oracle-java9-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections \
+#   && apt-get -y install oracle-java9-installer \
+#   && apt-get -y remove software-properties-common \
+#   && apt-get clean autoclean -y \
+#   && apt-get autoremove -y \
+#   && rm -rf /var/lib/apt \
+#     /var/lib/dpkg/arch \
+#     /var/lib/dpkg/available \
+#     /var/lib/dpkg/cmethopt \
+#     /var/lib/dpkg/diversions \
+#     /var/lib/dpkg/diversions-old \
+#     /var/lib/dpkg/lock \
+#     /var/lib/dpkg/parts \
+#     /var/lib/dpkg/statoverride \
+#     /var/lib/dpkg/status-old \
+#     /var/lib/dpkg/triggers \
+#     /var/lib/cache \
+#     /var/lib/log
 
 ###########################################################################
 # Check PHP version:
