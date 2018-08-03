@@ -428,11 +428,10 @@ RUN if [ ${INSTALL_NODE} = true ]; then \
         npm install -g bower \
         ;fi \
         && if [ ${INSTALL_NPM_VUE_CLI} = true ]; then \
-        npm install -g @vue/cli \
+        npm install -g @vue/cli && \
+        npm install -g webpack@^3.12.0 npm-check-updates && \
+        npm install -g jshint vue-svgicon parcel-bundler cross-env nativescript browser-sync \
         ;fi \
-
-      npm install -g webpack@^3.12.0 npm-check-updates && \
-      npm install -g jshint vue-svgicon parcel-bundler cross-env nativescript browser-sync \
 ;fi
 
 # Wouldn't execute when added to the RUN statement in the above block
@@ -807,7 +806,9 @@ USER root
 
 ARG PHP_VERSION=${PHP_VERSION}
 
-RUN apt-get -y install php${PHP_VERSION}-pdo-dblib
+RUN apt-get update
+RUN apt-get upgrade -y
+# RUN apt-get -y install php${PHP_VERSION}-pdo-dblib
 
 ###########################################################################
 # JAVA INSTALLATION
