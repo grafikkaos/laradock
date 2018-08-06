@@ -429,7 +429,7 @@ RUN if [ ${INSTALL_NODE} = true ]; then \
         ;fi \
         && if [ ${INSTALL_NPM_VUE_CLI} = true ]; then \
         npm install -g @vue/cli && \
-        npm install -g webpack@^3.12.0 npm-check-updates && \
+        npm install -g webpack@^3.12.0 npm-check-updates @adonisjs/cli && \
         npm install -g jshint vue-svgicon parcel-bundler cross-env nativescript browser-sync \
         ;fi \
 ;fi
