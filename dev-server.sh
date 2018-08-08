@@ -25,7 +25,7 @@ case "$1" in
         ;;
     rebuild)
         docker-compose stop && \
-        docker-compose rm -y && \
+        docker-compose rm -f && \
         docker-compose pull && \
         docker-compose build --no-cache apache2 nginx redis portainer beanstalkd beanstalkd-console mariadb phpmyadmin workspace php-worker
         ;;
