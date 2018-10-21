@@ -21,13 +21,13 @@ case "$1" in
         docker-compose stop
         ;;
     build)
-        docker-compose build apache2 nginx redis portainer beanstalkd beanstalkd-console mariadb phpmyadmin workspace php-worker
+        docker-compose build apache2 nginx redis portainer beanstalkd jenkins beanstalkd-console mariadb phpmyadmin workspace php-worker
         ;;
     rebuild)
         docker-compose stop && \
         docker-compose rm -f && \
         docker-compose pull && \
-        docker-compose build --no-cache apache2 nginx redis portainer beanstalkd beanstalkd-console mariadb phpmyadmin workspace php-worker
+        docker-compose build --no-cache apache2 nginx redis portainer jenkins beanstalkd beanstalkd-console mariadb phpmyadmin workspace php-worker
         ;;
     *)
         echo don\'t know
