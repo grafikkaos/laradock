@@ -5,11 +5,11 @@ case "$1" in
         if [ "$2" == "apache2" ]
         then
             printf "Starting $2 server......"
-            docker-compose up -d apache2 redis portainer beanstalkd beanstalkd-console mariadb phpmyadmin workspace php-worker
+            docker-compose up -d apache2 redis portainer beanstalkd jenkins beanstalkd-console mariadb phpmyadmin workspace php-worker
         elif [ "$2" == "nginx" ] 
         then
             printf "Starting $2 server......"
-            docker-compose up -d nginx redis portainer beanstalkd beanstalkd-console mariadb phpmyadmin workspace php-worker
+            docker-compose up -d nginx redis portainer beanstalkd jenkins beanstalkd-console mariadb phpmyadmin workspace php-worker
         else
             echo 'Selected server not found.  Choices are apache2 or nginx'
         fi
