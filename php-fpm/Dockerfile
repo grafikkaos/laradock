@@ -24,7 +24,7 @@ ARG LARADOCK_PHP_VERSION
 ENV DEBIAN_FRONTEND noninteractive
 
 # always run apt update when start and after add new source list, then clean up at end.
-RUN apt-get update -yqq && apt-get upgrade -y \
+RUN apt-get update -yqq && apt-get upgrade -y && \
     apt-get install -y apt-utils && \
     pecl channel-update pecl.php.net
 
