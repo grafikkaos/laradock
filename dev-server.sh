@@ -17,6 +17,10 @@ case "$1" in
     bash)
         docker-compose exec workspace bash
         ;;
+    reload)
+        docker-compose build --no-cache apache2 && \
+        docker-compose restart
+        ;;
     stop)
         docker-compose stop
         ;;
