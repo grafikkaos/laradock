@@ -80,3 +80,17 @@ ENTRYPOINT ["/sbin/tini", "--", "/usr/local/bin/jenkins.sh"]
 # from a derived Dockerfile, can use `RUN plugins.sh active.txt` to setup /usr/share/jenkins/ref/plugins from a support bundle
 COPY plugins.sh /usr/local/bin/plugins.sh
 COPY install-plugins.sh /usr/local/bin/install-plugins.sh
+
+# Only need below if we are starting from empty jenkins_home
+## Copy the RSA keys
+#RUN mkdir -p /var/jenkins_home/.ssh
+#RUN chown jenkins:jenkins /var/jenkins_home/.ssh
+#COPY keys/id_rsa /var/jenkins_home/.ssh/id_rsa.pub
+#COPY keys/id_rsa /var/jenkins_home/.ssh/id_rsa
+#COPY keys/known_hosts /var/jenkins_home/.ssh/known_hosts
+#
+#USER root
+#RUN chmod 600 /var/jenkins_home/.ssh/id_rsa
+#RUN chmod 644 /var/jenkins_home/.ssh/id_rsa.pub
+## ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+## ssh-keyscan -H bitbucket.org >> ~/.ssh/known_hosts

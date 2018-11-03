@@ -25,7 +25,17 @@ case "$1" in
         docker-compose stop
         ;;
     build)
-        docker-compose build apache2 nginx redis portainer beanstalkd jenkins beanstalkd-console mariadb phpmyadmin workspace php-worker
+        if [ "$2" == "apache2" ]
+        then
+            printf "Starting $2 server......"
+            docker-compose build apache2 redis portainer beanstalkd jenkins beanstalkd-console mariadb phpmyadmin workspace php-worker
+        elif [ "$2" == "nginx" ] 
+        then
+            printf "Starting $2 server......"
+            docker-compose build nginx redis portainer beanstalkd jenkins beanstalkd-console mariadb phpmyadmin workspace php-worker
+        else
+            echo 'Selected server not found.  Choices are apache2 or nginx'
+        fi
         ;;
     rebuild)
         docker-compose stop && \

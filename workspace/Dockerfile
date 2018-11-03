@@ -26,7 +26,6 @@ ENV DEBIAN_FRONTEND noninteractive
 # Start as root
 USER root
 
-
 ###########################################################################
 # Laradock non-root user:
 ###########################################################################
@@ -826,6 +825,10 @@ RUN apt-get -y install ffmpeg
 ###########################################################################
 
 USER root
+
+RUN apt-get update \
+    && apt-get update -yqq \
+    && apt-get install unzip -y
 
 RUN curl -s -O https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip \
     && unzip ngrok-stable-linux-amd64.zip \
