@@ -25,6 +25,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 # always run apt update when start and after add new source list, then clean up at end.
 RUN apt-get update -yqq && \
+    apt-get upgrade -y && \
     apt-get install -y apt-utils && \
     pecl channel-update pecl.php.net
 
@@ -501,6 +502,10 @@ COPY ./laravel.ini /usr/local/etc/php/conf.d
 COPY ./xlaravel.pool.conf /usr/local/etc/php-fpm.d/
 
 USER root
+
+# Update all packages again
+RUN apt-get update -yqq && \
+    apt-get upgrade -y
 
 # Clean up
 RUN apt-get clean && \
