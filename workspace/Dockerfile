@@ -973,16 +973,6 @@ RUN git config --global user.email "eokorie2007@gmail.com"
 RUN git config --global user.name "Emmanuel Okorie"
 RUN git config --global push.default simple
 
-###########################################################################
-# GIT FLOW
-###########################################################################
-
-USER root
-
-RUN apt-get update \
-    && apt-get update -yqq \
-    && apt-get install git-flow -y
-
 
 #
 #--------------------------------------------------------------------------
