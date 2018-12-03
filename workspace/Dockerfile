@@ -918,12 +918,21 @@ USER root
 
 RUN apt-get update \
     && apt-get update -yqq \
-    && apt-get install unzip -y
+    && apt-get install unzip telnet -y
 
 RUN curl -s -O https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip \
     && unzip ngrok-stable-linux-amd64.zip \
     && mv ngrok /usr/local/bin/ \
     && rm -f ngrok-stable-linux-amd64.zip
+
+
+###########################################################################
+# Useful PHP Code Quality Tools:
+###########################################################################
+
+USER laradock
+
+RUN composer global require "friendsofphp/php-cs-fixer"
 
 
 ###########################################################################
@@ -969,8 +978,8 @@ RUN php -v | head -n 1 | grep -q "PHP ${LARADOCK_PHP_VERSION}."
 
 USER root 
 
-RUN git config --global user.email "eokorie2007@gmail.com"
-RUN git config --global user.name "Emmanuel Okorie"
+#RUN git config --global user.email "eokorie2007@gmail.com"
+#RUN git config --global user.name "Emmanuel Okorie"
 RUN git config --global push.default simple
 
 
