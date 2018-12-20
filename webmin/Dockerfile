@@ -17,6 +17,8 @@ RUN apt-get -y install apt-show-versions webmin
 
 ENV LC_ALL C.UTF-8
 
+WORKDIR /var/www/
+
 EXPOSE 10000
 
 VOLUME ["/etc/webmin"]
